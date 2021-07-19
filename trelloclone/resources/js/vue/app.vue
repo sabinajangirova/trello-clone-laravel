@@ -1,77 +1,69 @@
 <template>
-    <div class="container overflow-auto flex-nowrap float-none">
-        <div class="row flex-nowrap" id="board">
+    <div class="container-fluid">
+        <div class="row" id="board">
             <draggable element="div" v-model="columns" :options="dragOptions">
-                <transition-group>
-                    <div class="col-xs-4" v-for="(element,index) in columns" :key="element.id">
+                <transition-group class="row d-inline-flex">
+                    <div class="col-md-4" v-for="(element,index) in columns" :key="element.id">
                         <div class="card">
-                            <div class="card-header card-title">
+                            <div class="card-header">
                                 <textarea v-if="element===editingColumn" class="text-input" @blur="endEditingColumn(element)" @keyup.enter="endEditingColumn(element)" v-model="element.name"></textarea>
                                 <label for="checkbox" v-if="element!== editingColumn" @dblclick="editColumn(element)">{{element.name}}</label>
-                                <button v-if="element!== editingColumn" type="button" class="close" aria-label="Close" @click="deleteColumn(element, index)">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
+                                <button v-if="element!== editingColumn" type="button" class="btn-close" aria-label="Close" @click="deleteColumn(element, index)"></button>
                             </div>
-                            <div class="card-body card-body-dark">
+                            <div class="card-body">
                                 <draggable :options="dragOptions" element="div" v-model="element.tasks" @end="changeColumn">
                                     <transition-group :id="element.id">
                                         <div v-for="(task,index) in element.tasks" :key="task.id" class="transit-1" :id="task.id">
-                                            <div class="small-card">
+                                            <div class="column-items">
                                                 <textarea v-if="task===editingTask" class="text-input" @blur="endEditing(task)" @keyup.enter="endEditing(task)" v-model="task.task"></textarea>
                                                 <label for="checkbox" v-if="task!== editingTask" @dblclick="editTask(task)">{{task.task}}</label>
-                                                <button v-if="task!== editingTask" type="button" class="close" aria-label="Close" @click="deleteTask(task, element, index)">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
+                                                <button v-if="task!== editingTask" type="button" class="btn-close" aria-label="Close" @click="deleteTask(task, element, index)"></button>
                                             </div>
                                         </div>
                                     </transition-group>
                                 </draggable>
-                                <div class="small-card">
-                                    <h5 class="text-center" v-on:click="addNew(index)">Add new card</h5>
+                                <div>
+                                    <h5 class="text-center" id="addCard" v-on:click="addNew(index)">Add new card</h5>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </transition-group>
+                <div class="text-center col-md-4" id="button">
+                    <button type="button" class="btn btn-info" @click="addNewColumn()">Add new column</button>
+                </div>
             </draggable>
-            <div class="text-center col-xs-4">
-                <button type="button" class="btn btn-info" @click="addNewColumn()">Add new column</button>
-            </div>
+
         </div>
     </div>
 </template>
 
 <style scoped>
-
-body, html{
-    height: 100%;
-}
-
-.card {
-    border:0;
-    border-radius: 0.5rem;
-    height: 100%;
-}
 .transit-1 {
     transition: all 1s;
 }
-.small-card {
+.column-items{
     padding: 1rem;
     background: #f5f8fa;
     margin-bottom: 5px;
     border-radius: .25rem;
 }
-.card-body-dark{
-    background-color: #ccc;
+
+#addCard:hover{
+    cursor: pointer;
 }
-textarea {
-    overflow: visible;
-    outline: 1px dashed black;
-    border: 0;
-    padding: 6px 0 2px 8px;
-    width: 100%;
+
+#addCard{
+    padding: 1rem;
+    margin-bottom: 5px;
+}
+
+.btn-close{
+    float: right;
+}
+
+.col-md-4{
     height: 100%;
-    resize: none;
 }
 
 </style>
@@ -79,10 +71,9 @@ textarea {
 <script>
 import draggable from 'vuedraggable'
 export default {
-    // components:{
-    //     draggable
-    // },
-    el: "#board",
+    components:{
+        draggable
+    },
     data(){
         return {
             columns:[],
