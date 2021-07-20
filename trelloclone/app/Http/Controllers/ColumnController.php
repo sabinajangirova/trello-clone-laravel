@@ -43,6 +43,7 @@ class ColumnController extends Controller
 
         return response()->json([
             'status' => (bool)$column,
+            'data'=>$column,
             'message' => $column ? 'Column Created' : 'Error Creating Column'
         ]);
     }

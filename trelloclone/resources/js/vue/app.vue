@@ -1,40 +1,37 @@
 <template>
     <div class="container-fluid">
-        <div class="row" id="board">
-            <draggable element="div" v-model="columns" :options="dragOptions">
-                <transition-group class="row d-inline-flex">
-                    <div class="col-md-4" v-for="(element,index) in columns" :key="element.id">
-                        <div class="card">
-                            <div class="card-header">
-                                <textarea v-if="element===editingColumn" class="text-input" @blur="endEditingColumn(element)" @keyup.enter="endEditingColumn(element)" v-model="element.name"></textarea>
-                                <label for="checkbox" v-if="element!== editingColumn" @dblclick="editColumn(element)">{{element.name}}</label>
-                                <button v-if="element!== editingColumn" type="button" class="btn-close" aria-label="Close" @click="deleteColumn(element, index)"></button>
-                            </div>
-                            <div class="card-body">
-                                <draggable :options="dragOptions" element="div" v-model="element.tasks" @end="changeColumn">
-                                    <transition-group :id="element.id">
-                                        <div v-for="(task,index) in element.tasks" :key="task.id" class="transit-1" :id="task.id">
-                                            <div class="column-items">
-                                                <textarea v-if="task===editingTask" class="text-input" @blur="endEditing(task)" @keyup.enter="endEditing(task)" v-model="task.task"></textarea>
-                                                <label for="checkbox" v-if="task!== editingTask" @dblclick="editTask(task)">{{task.task}}</label>
-                                                <button v-if="task!== editingTask" type="button" class="btn-close" aria-label="Close" @click="deleteTask(task, element, index)"></button>
-                                            </div>
+        <draggable element="div" class="row flex-nowrap flex-row" id="main-row" v-model="columns" :options="dragOptions">
+            <transition-group class="row flex-nowrap">
+                <div class="col-4" v-for="(element,index) in columns" :key="element.id">
+                    <div class="card">
+                        <div class="card-header">
+                            <textarea v-if="element===editingColumn" class="text-input" @blur="endEditingColumn(element)" @keyup.enter="endEditingColumn(element)" v-model="element.name"></textarea>
+                            <label for="checkbox" v-if="element!== editingColumn" @dblclick="editColumn(element)">{{element.name}}</label>
+                            <button v-if="element!== editingColumn" type="button" class="btn-close" aria-label="Close" @click="deleteColumn(element, index)"></button>
+                        </div>
+                        <div class="card-body">
+                            <draggable :options="dragOptions" element="div" v-model="element.tasks" @end="changeColumn">
+                                <transition-group :id="element.id">
+                                    <div v-for="(task,index) in element.tasks" :key="task.id" class="transit-1" :id="task.id">
+                                        <div class="column-items">
+                                            <textarea v-if="task===editingTask" class="text-input" @blur="endEditing(task)" @keyup.enter="endEditing(task)" v-model="task.task"></textarea>
+                                            <label for="checkbox" v-if="task!== editingTask" @dblclick="editTask(task)">{{task.task}}</label>
+                                            <button v-if="task!== editingTask" type="button" class="btn-close" aria-label="Close" @click="deleteTask(task, element, index)"></button>
                                         </div>
-                                    </transition-group>
-                                </draggable>
-                                <div>
-                                    <h5 class="text-center" id="addCard" v-on:click="addNew(index)">Add new card</h5>
-                                </div>
+                                    </div>
+                                </transition-group>
+                            </draggable>
+                            <div>
+                                <h5 class="text-center" id="addCard" v-on:click="addNew(index)">Add new card</h5>
                             </div>
                         </div>
                     </div>
-                </transition-group>
-                <div class="text-center col-md-4" id="button">
-                    <button type="button" class="btn btn-info" @click="addNewColumn()">Add new column</button>
                 </div>
-            </draggable>
-
-        </div>
+            </transition-group>
+            <div class="col-4 button-col">
+                <button type="button" id="button" @click="addNewColumn()" class="btn btn-info">Add new column</button>
+            </div>
+        </draggable>
     </div>
 </template>
 
@@ -62,8 +59,20 @@
     float: right;
 }
 
-.col-md-4{
-    height: 100%;
+#main-row{
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.col-4{
+    display: inline-block;
+}
+
+.button-col{
+    float: right;
+    width: fit-content;
 }
 
 </style>
@@ -139,9 +148,9 @@ export default {
             })
         },
         addNewColumn(){
-            let column = "New column";
-            axios.post('api/column', {name: column}).then(response=>{
-                this.columns.push()
+            let columnName = "New column";
+            axios.post('api/column', {name: columnName}).then(response=>{
+                this.columns.push(response.data.data)
             });
         }
     },
