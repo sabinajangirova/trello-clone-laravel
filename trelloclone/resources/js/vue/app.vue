@@ -1,7 +1,7 @@
 <template>
     <div class="container-fluid">
         <draggable element="div" class="row flex-nowrap flex-row" id="main-row" v-model="columns" :options="dragOptions">
-            <transition-group class="row flex-nowrap">
+            <transition-group class="row flex-nowrap" id="card-row">
                 <div class="col-4" v-for="(element,index) in columns" :key="element.id">
                     <div class="card">
                         <div class="card-header">
@@ -21,7 +21,7 @@
                                     </div>
                                 </transition-group>
                             </draggable>
-                            <div>
+                            <div class="add-card">
                                 <h5 class="text-center" id="addCard" v-on:click="addNew(index)">Add new card</h5>
                             </div>
                         </div>
@@ -36,6 +36,7 @@
 </template>
 
 <style scoped>
+
 .transit-1 {
     transition: all 1s;
 }
@@ -66,13 +67,23 @@
     white-space: nowrap;
 }
 
-.col-4{
-    display: inline-block;
+#card-row{
+    width: fit-content;
 }
 
 .button-col{
     float: right;
     width: fit-content;
+    margin-left: 24px;
+}
+
+.row>*{
+    max-width: fit-content;
+}
+
+.card{
+    overflow-y: auto;
+    max-height: 100%;
 }
 
 </style>
